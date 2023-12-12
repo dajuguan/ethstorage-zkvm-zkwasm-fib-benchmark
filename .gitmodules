@@ -1,0 +1,10 @@
+[submodule "third_party/risc0"]
+	path = third_party/risc0
+	url = https://github.com/apuslabs/risc0.git
+[submodule "third_party/zkWasm"]
+	path = third_party/zkWasm
+	url = https://github.com/apuslabs/zkWasm.git
+[submodule "third_party/go"]
+	path = third_party/go
+	url = https://github.com/apuslabs/go.git
+	branch = zkGo

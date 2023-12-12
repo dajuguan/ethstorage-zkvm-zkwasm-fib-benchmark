@@ -18,6 +18,7 @@ import fs from "fs"
     let cur = 0
     let preimages = fs.readFileSync(process.argv[3])
     const hostio = {
+        "wasi_snapshot_preview1": wasi.wasiImport,
         env: {
             wasm_input: (ispulic) => {
                 let data = preimages.readBigInt64BE(cur)

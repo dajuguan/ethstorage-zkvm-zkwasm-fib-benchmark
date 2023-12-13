@@ -21,13 +21,10 @@ use risc0_zkvm::guest::env;
 use wasmi::{Caller, Engine, Func, Linker, Module, Store};
 
 pub fn main() {
-    env::log(&format!("main function"));
     let engine = Engine::default();
 
     let wasm: Vec<u8> = env::read();
     let pub_values: Vec<i64> = env::read();
-
-    env::log(&format!("wasmi engine initialized"));
 
     // Derived from the wasmi example: https://docs.rs/wasmi/0.29.0/wasmi/#example
     let module = Module::new(&engine, &mut &wasm[..]).expect("Failed to create module");
@@ -44,7 +41,6 @@ pub fn main() {
         }
     });
     let wasm_input = Func::wrap(&mut store, |mut caller: Caller<'_, HostState>, is_public: i32| -> i64 {
-        env::log(&format!("wasm_input called"));
         if is_public != 1 {
             panic!("Currently, only public variables are supported");
         }
@@ -71,13 +67,11 @@ pub fn main() {
         .expect("failed to instantiate")
         .start(&mut store)
         .expect("Failed to start");
-    env::log(&format!("wasmi instance started"));
 
     let zkmain = instance
         .get_typed_func::<(),()>(&store, "zkmain")
         .expect("Failed to get typed_func");
-    env::log(&format!("wasm call start"));
     zkmain.call(&mut store, ()).expect("Failed to call");
-    env::log(&format!("wasm call end"));
+    env::log(&format!("record total cycle"));
     env::commit(&1);
 }

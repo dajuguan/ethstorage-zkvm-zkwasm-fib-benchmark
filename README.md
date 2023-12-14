@@ -4,33 +4,55 @@ This project is for [Eth Storage Grant 1](https://github.com/ethstorage/EthStora
 
 # Summary
 
-Compare zkWasm/zkVM DryRun/Witness/Prove Benchmark
+Compare fib.go/fib.rs zkWasm/zkVM DryRun/Witness/Prove Benchmark
 
-5 Control Groups
+
+## fib.go
+Control Groups
 1. `zkWasm` fib_zkgo.go -> zkGo -> fib.wasm -> zkWasm
 2. `wasmi` fib_zkgo.go -> zkGo -> fib.wasm -> wasmi -> RiscV ELF -> zkVM
 3. `tinygo` fib.go -> tinygo -> RiscV ELF -> zkVM
-4. `zkVM` fib.rs -> RiscV ELF -> zkVM
-5. `cuda` fib.rs -> RiscV ELF -> zkVM(cuda)
+4. `cuda` fib_zkgo.go -> zkGo -> fib.wasm -> zkWasm(cuda)
 
-## N=10000
-|         | zkWasm  | wasmi   | tinygo  | zkVM    | cuda    |
-| ------- | ------- | ------- | ------- | ------- | ------- |
-| dryrun  | 0.77s   | ❌(tech) | ❌(tech) | ❌(tech) | ❌(tech) |
-| witness | 143.4s  | 323s    | ❌(tech) | 0.54s   | 0.54s   |
-| prove   | ❌(tech) | ❌(perf) | ❌(tech) | ~2h     | 144s    |
+### N=10000
+|         | zkWasm | wasmi | tinygo | cuda |
+| ------- | ------ | ----- | ------ | ---- |
+| dryrun  | 0.77s  | ❌     | ❌      |      |
+| witness | 143.4s | 323s  | ❌      |      |
+| prove   | ❌      | ⏳     | ❌      |      |
 
-## N=100000
-|         | zkWasm  | wasmi   | tinygo  | zkVM    | cuda    |
-| ------- | ------- | ------- | ------- | ------- | ------- |
-| dryrun  | 17s     | ❌(tech) | ❌(tech) | ❌(tech) | ❌(tech) |
-| witness | ❌(perf) | ❌(perf) | ❌(tech) | 49.9s   | 49.9s   |
-| prove   | ❌(perf) | ❌(perf) | ❌(tech) | ❌(tech) | ~50m    |
+### N=100000
+|         | zkWasm | wasmi | tinygo | cuda |
+| ------- | ------ | ----- | ------ | ---- |
+| dryrun  | 17s    | ❌     | ❌      |      |
+| witness | ⏳      | ⏳     | ❌      |      |
+| prove   | ⏳      | ⏳     | ❌      |      |
+
+## fib.rs
+Control Groups
+1. `zkWasm` fib.rs -> fib.wasm -> zkWasm
+2. `zkVM` fib.rs -> RiscV ELF -> zkVM
+3. `cuda` fib.rs -> RiscV ELF -> zkVM(cuda)
+
+### N=10000
+|         | zkWasm | zkVM  | cuda  |
+| ------- | ------ | ----- | ----- |
+| dryrun  |        | ❌     | ❌     |
+| witness |        | 0.54s | 0.54s |
+| prove   |        | 25m   | 2.4m  |
+
+### N=100000
+|         | zkWasm | zkVM  | cuda   |
+| ------- | ------ | ----- | ------ |
+| dryrun  |        | ❌     | ❌      |
+| witness |        | 49.9s | 49.9s  |
+| prove   |        | ⏳     | 235.1m |
 
 ## Explain
 
-❌(tech) means cannot perform due to program error
-❌(perf) means cannot perform due to too long execution time (usually longer than 2 hours)
+❌ means cannot perform due to program error
+
+⏳ means cannot perform due to too long execution time (usually longer than 2 hours)
 
 ### Test Enviroment
 
@@ -43,7 +65,7 @@ AMD 5950X 3.4Ghz 16core
 128GB RAM
 
 ### Additional Info
-1. risc0/tinygo is not compatible with zkvm currently
+1. risc0/tinygo is not [compatible](https://github.com/risc0/risc0/issues/1222) with zkvm currently
 2. zkWasm prove failed because of panicked at `crates/zkwasm/src/circuits/utils/table_entry.rs:153:22` when free memory is only 6GB of 128GB
 3. most test for N=100000 failed due to performance
 

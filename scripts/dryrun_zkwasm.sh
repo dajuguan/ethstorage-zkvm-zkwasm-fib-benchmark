@@ -12,4 +12,4 @@ GOOS=wasip1 GOARCH=wasm $SCRIPT_DIR/../third_party/go/bin/go build -gcflags=all=
 # node $SCRIPT_DIR/../zkWasm-emulator/wasi/wasi_exec_node.js $SCRIPT_DIR/../output/fib.wasm $SCRIPT_DIR/../output/input.dat
 
 # $SCRIPT_DIR/../third_party/zkWasm/target/debug/delphinus-cli -k 22 --wasm $SCRIPT_DIR/../output/fib.wasm  --function zkmain dry-run --public 873876091:i64
-$SCRIPT_DIR/../third_party/zkWasm/target/release/delphinus-cli -k 22 --wasm $SCRIPT_DIR/../output/fib.wasm  --function zkmain dry-run --public 1242044891:i64
+$SCRIPT_DIR/../third_party/zkWasm/target/release/delphinus-cli -k 22 --wasm $SCRIPT_DIR/../output/fib.wasm  --function zkmain dry-run --public 1556111435:i64

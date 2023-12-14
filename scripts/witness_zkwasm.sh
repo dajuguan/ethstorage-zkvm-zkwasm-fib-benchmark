@@ -13,4 +13,4 @@ GOOS=wasip1 GOARCH=wasm $SCRIPT_DIR/../third_party/go/bin/go build -gcflags=all=
 
 $SCRIPT_DIR/../third_party/zkWasm/target/release/delphinus-cli -k 22 --wasm $SCRIPT_DIR/../output/fib.wasm --function zkmain setup
 
-$SCRIPT_DIR/../third_party/zkWasm/target/release/delphinus-cli -k 22 --wasm $SCRIPT_DIR/../output/fib.wasm --function zkmain single-witness --public 1242044891:i64
+$SCRIPT_DIR/../third_party/zkWasm/target/release/delphinus-cli -k 22 --wasm $SCRIPT_DIR/../output/fib.wasm --function zkmain single-witness --public 873876091:i64

@@ -555,6 +555,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "fib-methods"
+version = "0.1.0"
+dependencies = [
+ "risc0-build",
+]
+
+[[package]]
 name = "find_cuda_helper"
 version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2349,8 +2356,8 @@ checksum = "9c8d87e72b64a3b4db28d11ce29237c246188f4f51057d65a7eab63b7987e423"
 name = "wasm"
 version = "0.1.0"
 dependencies = [
+ "fib-methods",
  "risc0-zkvm",
- "wasm-methods",
 ]
 
 [[package]]
@@ -2418,13 +2425,6 @@ name = "wasm-bindgen-shared"
 version = "0.2.89"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7ab9b36309365056cd639da3134bf87fa8f3d86008abf99e612384a6eecd459f"
-
-[[package]]
-name = "wasm-methods"
-version = "0.1.0"
-dependencies = [
- "risc0-build",
-]
 
 [[package]]
 name = "web-sys"

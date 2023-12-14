@@ -72,6 +72,5 @@ pub fn main() {
         .get_typed_func::<(),()>(&store, "zkmain")
         .expect("Failed to get typed_func");
     zkmain.call(&mut store, ()).expect("Failed to call");
-    env::log(&format!("record total cycle"));
     env::commit(&1);
 }

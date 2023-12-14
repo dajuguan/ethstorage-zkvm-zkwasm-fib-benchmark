@@ -12,15 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use risc0_zkvm::{default_prover, ExecutorEnv};
+use risc0_zkvm::{default_prover, default_executor, ExecutorEnv};
 use std::env;
 use std::fs;
 use std::process;
 use std::str::FromStr;
 use wasm_methods::{WASM_INTERP_ELF, WASM_INTERP_ID};
-use std::time::Instant;
 
-fn run_guest(wasm: Vec<u8>, public_values: &[String]) {
+fn run_guest(method: &str, wasm: Vec<u8>, public_values: &[String]) {
     let mut parsed_values: Vec<i64> = Vec::new();
     for val in public_values {
         let parts: Vec<&str> = val.split(':').collect();
@@ -52,25 +51,17 @@ fn run_guest(wasm: Vec<u8>, public_values: &[String]) {
         .build()
         .unwrap();
 
-    let start = Instant::now();
-    // Obtain the default prover.
-    let prover = default_prover();
-
-    // Produce a receipt by proving the specified ELF binary.
-    let receipt = prover.prove_elf(env, WASM_INTERP_ELF).unwrap();
-
-    receipt.verify(WASM_INTERP_ID).expect(
-        "Code you have proven should successfully verify; did you specify the correct image ID?",
-    );
-    let duration = start.elapsed();
-    println!("Execute time: {:?}", duration);
-    // let _result: i32 = receipt.journal.decode().unwrap();
-    // let start = Instant::now();
-    // let executor = default_executor();
-    // let session_info = executor.execute_elf(env, WASM_INTERP_ELF).unwrap();
-    // let _result: i32 = session_info.journal.decode().unwrap();
-    // let duration = start.elapsed();
-    // println!("Execute time: {:?}", duration);
+    if method == "execute" {
+        let executor = default_executor();
+        let session_info = executor.execute_elf(env, WASM_INTERP_ELF).unwrap();
+        let _result: i32 = session_info.journal.decode().unwrap();
+    } else {
+        let prover = default_prover();
+        let receipt = prover.prove_elf(env, WASM_INTERP_ELF).unwrap();
+        receipt.verify(WASM_INTERP_ID).expect(
+            "Code you have proven should successfully verify; did you specify the correct image ID?",
+        );
+    }
 }
 
 fn main() {
@@ -85,6 +76,7 @@ fn main() {
     let mut wasm_file_path = String::new();
     let mut public_values = Vec::new();
     let mut current_arg = 1;
+    let mut method = "execute";
     while current_arg < args.len() {
         match args[current_arg].as_str() {
             "--wasm" => {
@@ -103,6 +95,18 @@ fn main() {
                 }
                 public_values.push(args[current_arg].clone());
             }
+            "--method" => {
+                current_arg += 1;
+                if current_arg >= args.len() {
+                    eprintln!("Expected method after --method");
+                    process::exit(1);
+                }
+                method = args[current_arg].as_str();
+                if method != "execute" && method != "prove" {
+                    eprintln!("Unknown method: {}", method);
+                    process::exit(1);
+                }
+            }
             _ => {
                 eprintln!("Unknown option: {}", args[current_arg]);
                 process::exit(1);
@@ -118,5 +122,5 @@ fn main() {
             process::exit(1);
         }
     };
-    run_guest(wasm, &public_values);
+    run_guest(method, wasm, &public_values);
 }

@@ -5,7 +5,7 @@ edition = "2021"
 
 [dependencies]
 risc0-zkvm = { path = "../../third_party/risc0/risc0/zkvm" }
-wasm-methods = { path = "methods" }
+fib-methods = { path = "methods" }
 
 [features]
 cuda = ["risc0-zkvm/cuda"]

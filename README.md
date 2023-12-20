@@ -18,23 +18,23 @@ Control Groups
 ### N=100
 |         | zkWasm | risc0 | risc0(cuda) |
 | ------- | ------ | ----- | ----------- |
-| dryrun  |        | ❌     | ❌           |
-| witness |        | 200s  |             |
-| prove   |        | ⏳     |             |
+| dryrun  | 0.72s  | ❌     | ❌           |
+| witness | 81s    | 200s  | 200s        |
+| prove   | ❌      | ⏳     | ⏳           |
 
 ### N=10000
 |         | zkWasm | risc0 | risc0(cuda) |
 | ------- | ------ | ----- | ----------- |
 | dryrun  | 0.77s  | ❌     | ❌           |
-| witness | 143.4s | 323s  |             |
-| prove   | ❌      | ⏳     |             |
+| witness | 143.4s | 323s  | 323s        |
+| prove   | ❌      | ⏳     | ⏳           |
 
 ### N=100000
 |         | zkWasm | risc0 | risc0(cuda) |
 | ------- | ------ | ----- | ----------- |
 | dryrun  | 17s    | ❌     | ❌           |
-| witness | ⏳      | ⏳     |             |
-| prove   | ⏳      | ⏳     |             |
+| witness | ⏳      | ⏳     | ⏳           |
+| prove   | ⏳      | ⏳     | ⏳           |
 
 ## fib.rs
 Control Groups
@@ -48,20 +48,20 @@ Control Groups
 | ------- | ------ | ------- | ----------- |
 | dryrun  | 8.79ms | ❌       | ❌           |
 | witness | 33ms   | 14.27ms | 14.27ms     |
-| prove   | ❌      | 6s      | 2s          |
+| prove   | 542s   | 6s      | 2s          |
 
 ### N=10000
 |         | zkWasm | zkVM  | risc0(cuda) |
 | ------- | ------ | ----- | ----------- |
 | dryrun  | 148ms  | ❌     | ❌           |
-| witness | ❌      | 0.54s | 0.54s       |
+| witness | 40s    | 0.54s | 0.54s       |
 | prove   | ❌      | 25m   | 2.4m        |
 
 ### N=100000
 |         | zkWasm | zkVM  | risc0(cuda) |
 | ------- | ------ | ----- | ----------- |
 | dryrun  | 11s    | ❌     | ❌           |
-| witness | ❌      | 49.9s | 49.9s       |
+| witness | 🪫      | 49.9s | 49.9s       |
 | prove   | ❌      | ⏳     | 235.1m      |
 
 ## Explain
@@ -69,6 +69,8 @@ Control Groups
 ❌ means cannot perform due to program error
 
 ⏳ means cannot perform due to too long execution time (usually longer than 2 hours)
+
+🪫 means cannot perform due to OOM
 
 ### Test Enviroment
 
@@ -137,19 +139,24 @@ cargo binstall cargo-risczero
 cargo risczero install
 ```
 
+install wasm-pack
+```
+curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+```
+
 build zkGo
 ```
 cd third_party/go/src
 ./all.bash
 ```
 
-build zkWasm
+build zkWasm(optional)
 ```
 cd third_party/zkWasm
 cargo build --release
 ```
 
-build risc0
+build risc0(optional)
 ```
 cd third_party/risc0
 cargo build --release
@@ -168,19 +175,26 @@ cargo build --release
 ```
 cd scripts
 
-# test zkwasm
-./zkwasm.sh dry-run
-./zkwasm.sh single-witness
-./zkwasm.sh single-prove
+# test zkwasm + fib.go
+./zkwasm-fibgo.sh dry-run
+./zkwasm-fibgo.sh single-prove
 
-# test zkvm
-./zkvm.sh execute
-./zkvm.sh prove
+# test risc + fib.go
+./risc0-fibgo.sh execute
+./risc0-fibgo.sh prove
 
-# test wasmi
-./wasmi.sh execute
-./wasmi.sh prove
+# test zkwasm + fib.rs
+./zkwasm-fibrs.sh dry-run
+./zkwasm-fibrs.sh single-prove
+
+# test risc + fib.rs
+./risc0-fibrs.sh execute
+./risc0-fibrs.sh prove
 ```
+
+**Open each shell, and you will find six commented commands. Execute each one for N=100, N=10000, and N=100000 to obtain the CPU/CUDA results.**
+
+_If you encounter an error while running zkwasm, update the -k 22 argument to -k 24 and try again._
 
 ### cuda
 
@@ -194,15 +208,11 @@ export PATH=$PATH:/usr/local/cuda-12.3/bin
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda-12.3/lib64
 ```
 
-```
-cd src/zkvm-wasmi
-cargo build --release --features cuda
-cd src/zkvm-fib
-cargo build --release 
-```
-
+**uncomment the cuda command in the shell and run the shell**
 
 ### tinygo
+
+_due to lfs limit, you can contact me<jax@apus.network> for the tinygo deb and gzip_
 
 tinygo built from source using LLVM, the following use built image
 
@@ -246,7 +256,11 @@ and zkVM runs wasmi, wasmi run fib.wasm, the wasm VM costs.
 for both zkWasm & zkVM
 when N=10000 goes to N=100000
 
-the execution trace measurement instrction cycles grouth up by index
+the execution trace measurement instrction cycles grouth up by index(pow(N, 2))
+
+### fib.go vs fib.rs
+
+obviously, fib.rs is much faster than fib.go due to different memory management
 
 ### tinygo
 tinygo is not ready for zkVM, we can work on it

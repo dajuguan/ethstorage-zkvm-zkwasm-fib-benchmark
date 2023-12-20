@@ -78,14 +78,13 @@ Control Groups
 64GB RAM
 RTX 4090
 
-zkWasm witness N=10000 running on
-AMD 5950X 3.4Ghz 16core
+`zkWasm-fibgo witness N=10000` and `zkWasm-fibrs N=100 prove` running on
+AMD 5950X 3.4Ghz 16cores
 128GB RAM
 
 ### Additional Info
-1. risc0/tinygo is not [compatible](https://github.com/risc0/risc0/issues/1222) with zkvm currently
-2. zkWasm prove failed because of panicked at `crates/zkwasm/src/circuits/utils/table_entry.rs:153:22` when free memory is only 6GB of 128GB
-3. most test for N=100000 failed due to performance
+1. tinygo is not [compatible](https://github.com/risc0/risc0/issues/1222) with latest zkvm
+2. zkWasm prove failed because of panicked at `crates/zkwasm/src/circuits/utils/table_entry.rs:153:22`, maybe because of circuits size limit
 
 # How to reproduce
 

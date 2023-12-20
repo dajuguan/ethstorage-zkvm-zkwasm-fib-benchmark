@@ -1,2 +1,6 @@
 output
 target
+
+.idea
+
+src/fib-wasm/pkg

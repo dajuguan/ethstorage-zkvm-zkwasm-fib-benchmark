@@ -4,49 +4,65 @@ This project is for [Eth Storage Grant 1](https://github.com/ethstorage/EthStora
 
 # Summary
 
-Compare fib.go/fib.rs zkWasm/zkVM DryRun/Witness/Prove Benchmark
+Compare fib.go/fib.rs zkWasm/risc0 DryRun/Witness/Prove Benchmark
 
 
 ## fib.go
 Control Groups
 1. `zkWasm` fib_zkgo.go -> zkGo -> fib.wasm -> zkWasm
-2. `wasmi` fib_zkgo.go -> zkGo -> fib.wasm -> wasmi -> RiscV ELF -> zkVM
-3. `tinygo` fib.go -> tinygo -> RiscV ELF -> zkVM
-4. `cuda` fib_zkgo.go -> zkGo -> fib.wasm -> zkWasm(cuda)
+2. `zkWasm(cuda)` fib_zkgo.go -> zkGo -> fib.wasm -> zkWasm(cuda)  (❌due to cuda 12.3 not compatible)
+3. `risc0` fib_zkgo.go -> zkGo -> fib.wasm -> wasmi -> RiscV ELF -> risc0
+4. `risc0(cuda)` fib_zkgo.go -> zkGo -> fib.wasm -> wasmi -> RiscV ELF -> risc0(cuda)
+5. `tinygo` fib.go -> tinygo -> RiscV ELF -> risc0  (❌ due to not support currently)
+
+### N=100
+|         | zkWasm | risc0 | risc0(cuda) |
+| ------- | ------ | ----- | ----------- |
+| dryrun  |        | ❌     | ❌           |
+| witness |        | 200s  |             |
+| prove   |        | ⏳     |             |
 
 ### N=10000
-|         | zkWasm | wasmi | tinygo | cuda |
-| ------- | ------ | ----- | ------ | ---- |
-| dryrun  | 0.77s  | ❌     | ❌      |      |
-| witness | 143.4s | 323s  | ❌      |      |
-| prove   | ❌      | ⏳     | ❌      |      |
+|         | zkWasm | risc0 | risc0(cuda) |
+| ------- | ------ | ----- | ----------- |
+| dryrun  | 0.77s  | ❌     | ❌           |
+| witness | 143.4s | 323s  |             |
+| prove   | ❌      | ⏳     |             |
 
 ### N=100000
-|         | zkWasm | wasmi | tinygo | cuda |
-| ------- | ------ | ----- | ------ | ---- |
-| dryrun  | 17s    | ❌     | ❌      |      |
-| witness | ⏳      | ⏳     | ❌      |      |
-| prove   | ⏳      | ⏳     | ❌      |      |
+|         | zkWasm | risc0 | risc0(cuda) |
+| ------- | ------ | ----- | ----------- |
+| dryrun  | 17s    | ❌     | ❌           |
+| witness | ⏳      | ⏳     |             |
+| prove   | ⏳      | ⏳     |             |
 
 ## fib.rs
 Control Groups
 1. `zkWasm` fib.rs -> fib.wasm -> zkWasm
-2. `zkVM` fib.rs -> RiscV ELF -> zkVM
-3. `cuda` fib.rs -> RiscV ELF -> zkVM(cuda)
+2. `zkWasm(cuda)` fib.rs -> fib.wasm -> zkWasm(cuda)  (❌due to cuda 12.3 not compatible)
+3. `risc0` fib.rs -> RiscV ELF -> risc0
+4. `risc0(cuda)` fib.rs -> RiscV ELF -> risc0(cuda) 
+
+### N=100
+|         | zkWasm | risc0   | risc0(cuda) |
+| ------- | ------ | ------- | ----------- |
+| dryrun  | 8.79ms | ❌       | ❌           |
+| witness | 33ms   | 14.27ms | 14.27ms     |
+| prove   | ❌      | 6s      | 2s          |
 
 ### N=10000
-|         | zkWasm | zkVM  | cuda  |
-| ------- | ------ | ----- | ----- |
-| dryrun  |        | ❌     | ❌     |
-| witness |        | 0.54s | 0.54s |
-| prove   |        | 25m   | 2.4m  |
+|         | zkWasm | zkVM  | risc0(cuda) |
+| ------- | ------ | ----- | ----------- |
+| dryrun  | 148ms  | ❌     | ❌           |
+| witness | ❌      | 0.54s | 0.54s       |
+| prove   | ❌      | 25m   | 2.4m        |
 
 ### N=100000
-|         | zkWasm | zkVM  | cuda   |
-| ------- | ------ | ----- | ------ |
-| dryrun  |        | ❌     | ❌      |
-| witness |        | 49.9s | 49.9s  |
-| prove   |        | ⏳     | 235.1m |
+|         | zkWasm | zkVM  | risc0(cuda) |
+| ------- | ------ | ----- | ----------- |
+| dryrun  | 11s    | ❌     | ❌           |
+| witness | ❌      | 49.9s | 49.9s       |
+| prove   | ❌      | ⏳     | 235.1m      |
 
 ## Explain
 

@@ -102,7 +102,7 @@ cd ethstorage-zkvm-zkwasm-fib-benchmark
 git submodule init
 git submodule add https://github.com/apuslabs/risc0.git third_party/risc0
 git submodule add https://github.com/apuslabs/zkWasm.git third_party/zkWasm
-git submoduole add -b zkGo https://github.com/apuslabs/go.git third_party/go
+git submodule add -b zkGo https://github.com/apuslabs/go.git third_party/go
 cd third_party/zkWasm
 git submodule init
 git submodule update
@@ -161,6 +161,8 @@ cargo build --release
 build risc0(optional)
 ```
 cd third_party/risc0
+git fetch --tags --all
+git checkout v0.19.1
 cargo build --release
 ```
 

@@ -106,6 +106,9 @@ git submoduole add -b zkGo https://github.com/apuslabs/go.git third_party/go
 cd third_party/zkWasm
 git submodule init
 git submodule update
+cd third_party/risc0
+git fetch --tags --all
+git checkout v0.19.1
 ```
 
 ### install dependencies
